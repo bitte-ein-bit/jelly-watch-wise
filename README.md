@@ -94,13 +94,15 @@ Note: while libraries are removed, Jellyfin answers requests for them with HTTP 
 Some clients (e.g. Streamyfin 0.55 and later) treat any 401 as an expired session and log the user out.
 
 **`tags`**
-keeps all libraries and sets "Allow items with tags" (`AllowedTags`) to `lock_tag` (default `jww-locked`).
-No item carries that tag, so all items are hidden: libraries stay visible but empty,
-and clients get empty lists (HTTP 200) instead of 401, so nobody gets logged out.
+keeps all libraries and sets "Allow items with tags" (`AllowedTags`) to `no_limit_tag` (default `jww-no-limit`).
+Only items carrying that tag stay visible, everything else is hidden: libraries stay visible,
+and clients get (empty) lists with HTTP 200 instead of 401, so nobody gets logged out.
 * Works with Enable All Folders too.
 * The user's own allowed tags are backed up in `config/user-tags.bck` and restored on unlock.
 * The lock state is read from the user policy, so restarts of the app or of Jellyfin are safe.
-* `no_limit_folders` is not supported; never put `lock_tag` on any item.
+* `no_limit_folders` is not supported. Instead, tag the media that should stay available with `no_limit_tag`
+  (on a movie, an episode, or a series; episodes inherit the tag of their series).
+  Tagging a whole library is not reliable: Jellyfin's list queries only check the item's and the series' tags.
 * Switching from `folders` to `tags` restores libraries removed by an earlier `folders` lock.
 
 **If the watch time cannot be read**

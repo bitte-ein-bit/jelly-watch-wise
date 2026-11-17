@@ -127,14 +127,14 @@ class ServerInteraction:
         else:
             self.backup.keep_user_folders(user_id, folders)
         tags = self.api.get_allowed_tags(user_id)
-        locked = self.config.lock_tag in tags
+        locked = self.config.no_limit_tag in tags
         if time_left > 0 and locked:
             self.api.set_allowed_tags(user_id, self.tags_backup.restore_user_tags(user_id))
             logger.info('allowed tags restored - tag lock removed')
         elif time_left <= 0 and not locked:
             self.tags_backup.keep_user_tags(user_id, tags)
-            # "Allow items with tags" replaces the list: only items carrying the lock tag (none) stay visible
-            self.api.set_allowed_tags(user_id, [self.config.lock_tag])
+            # "Allow items with tags" replaces the list: only items carrying the no-limit tag stay visible
+            self.api.set_allowed_tags(user_id, [self.config.no_limit_tag])
             logger.info('items hidden - tag lock action')
 
     def get_today_watched_min(self, user_id):
